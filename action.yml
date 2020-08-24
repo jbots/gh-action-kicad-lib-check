@@ -1,0 +1,23 @@
+name: "KiCad library checks"
+description: "Perform KiCad library checks and integrate into Github Workflows"
+author: "commits@justyn.co"
+
+inputs:
+  files_new:
+    description: "New/renamed files, space delimited, must not contain spaces"
+    required: true
+  files_modified:
+    description: "Modified files, space delimited, must not contain spaces"
+    required: true
+  sym_re:
+    description: "Run symbol checker against paths matching this regex"
+    required: true
+    default: "^.+\\.lib$"
+  fp_re:
+    description: "Run footprint checker against paths matching this regex"
+    required: true
+    default: "^.+\\.kicad_mod$"
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
