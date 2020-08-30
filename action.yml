@@ -17,6 +17,9 @@ inputs:
     description: "Run footprint checker against paths matching this regex"
     required: true
     default: "^.+\\.kicad_mod$"
+  rules_exclude:
+    description: "Comma separated list of rules to exclude"
+    required: false
 
 runs:
   using: "docker"

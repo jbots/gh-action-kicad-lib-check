@@ -14,6 +14,12 @@ files_new=($INPUT_FILES_NEW)
 files_modified=($INPUT_FILES_MODIFIED)
 files_all=($INPUT_FILES_NEW $INPUT_FILES_MODIFIED)
 
+if [[ -z "${INPUT_RULES_EXCLUDE}" ]]; then
+  echo no rules to exclude
+else
+  EXCLUDE_ARGS="--exclude ${INPUT_RULES_EXCLUDE}"
+fi
+
 touch raw_output
 
 echo ..........
@@ -23,7 +29,7 @@ do
   echo ${file};
   if [[ $file =~ ${INPUT_SYM_RE} ]]; then
     echo ...found new symbol library ${file}
-    python ${CHECKLIB} ${NEW}/${file} -vv --nocolor --footprints ${FOOTPRINTS} >> ${RAWOUT}
+    python ${CHECKLIB} ${NEW}/${file} -vv --nocolor --footprints ${FOOTPRINTS} ${EXCLUDE_ARGS} >> ${RAWOUT}
   fi
 done
 
@@ -35,7 +41,7 @@ do
   if [[ $file =~ ${INPUT_SYM_RE} ]]; then
     echo ...found updated symbol library $file
     cd $GITHUB_WORKSPACE/kicad-library-utils/schlib # comparelib must be run from here :-/
-    python ${COMPARELIBS} --new ${NEW}/${file} --old ${OLD}/${file} --nocolor --check -v --footprints ${FOOTPRINTS} >> ${RAWOUT}
+    python ${COMPARELIBS} --new ${NEW}/${file} --old ${OLD}/${file} --nocolor --check -v --footprints ${FOOTPRINTS} ${EXCLUDE_ARGS} >> ${RAWOUT}
   fi
 done
 
@@ -45,7 +51,7 @@ for file in ${files_all[@]};
 do
   if [[ $file =~ ${INPUT_FP_RE} ]]; then
     echo ...found footprint file ${file}
-    python ${CHECK_KICAD_MOD} ${NEW}/${file} -vv --nocolor >> ${RAWOUT}
+    python ${CHECK_KICAD_MOD} ${NEW}/${file} -vv --nocolor ${EXCLUDE_ARGS} >> ${RAWOUT}
   fi
 done
 
